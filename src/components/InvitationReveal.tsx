@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface InvitationRevealProps {
@@ -10,7 +10,6 @@ interface InvitationRevealProps {
 export default function InvitationReveal({ onComplete }: InvitationRevealProps) {
   const [phase, setPhase] = useState<"envelope" | "open" | "content" | "exit">("envelope");
   const [sparkles, setSparkles] = useState<{ id: number; x: number; y: number; size: number; delay: number }[]>([]);
-  const timeoutRefs = useRef<NodeJS.Timeout[]>([]);
 
   useEffect(() => {
     const s = Array.from({ length: 40 }, (_, i) => ({
@@ -22,14 +21,22 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
     }));
     setSparkles(s);
 
+    // Auto-progress: envelope → open → content
+    // But NEVER auto-exit — user must click "OPEN INVITATION"
     const t1 = setTimeout(() => setPhase("open"), 1800);
     const t2 = setTimeout(() => setPhase("content"), 3200);
-    const t3 = setTimeout(() => setPhase("exit"), 5800);
-    const t4 = setTimeout(() => onComplete(), 7000);
-    timeoutRefs.current = [t1, t2, t3, t4];
 
-    return () => timeoutRefs.current.forEach(clearTimeout);
-  }, [onComplete]);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  const handleOpen = () => {
+    setPhase("exit");
+    // Small delay so exit animation plays before unmount
+    setTimeout(() => onComplete(), 900);
+  };
 
   return (
     <AnimatePresence>
@@ -38,7 +45,7 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
           className="fixed inset-0 z-[1000] flex items-center justify-center overflow-hidden"
           style={{ background: "radial-gradient(ellipse at center, #1A0535 0%, #0C0318 40%, #040108 100%)" }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
+          transition={{ duration: 0.9, ease: "easeInOut" }}
         >
           {/* Background sparkles */}
           {sparkles.map((sp) => (
@@ -52,25 +59,15 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                 height: sp.size,
                 background: sp.id % 3 === 0 ? "#FFD047" : sp.id % 3 === 1 ? "#FFAA00" : "#fff",
               }}
-              animate={{
-                opacity: [0, 1, 0.3, 1, 0],
-                scale: [0, 1, 0.7, 1.2, 0],
-              }}
-              transition={{
-                duration: 3,
-                delay: sp.delay,
-                repeat: Infinity,
-                repeatDelay: Math.random() * 2,
-              }}
+              animate={{ opacity: [0, 1, 0.3, 1, 0], scale: [0, 1, 0.7, 1.2, 0] }}
+              transition={{ duration: 3, delay: sp.delay, repeat: Infinity, repeatDelay: Math.random() * 2 }}
             />
           ))}
 
           {/* Radial glow */}
           <motion.div
             className="absolute inset-0"
-            style={{
-              background: "radial-gradient(ellipse at center, rgba(255,170,0,0.15) 0%, transparent 70%)",
-            }}
+            style={{ background: "radial-gradient(ellipse at center, rgba(255,170,0,0.15) 0%, transparent 70%)" }}
             animate={{ opacity: [0.3, 0.8, 0.3] }}
             transition={{ duration: 3, repeat: Infinity }}
           />
@@ -83,9 +80,7 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
             {/* Outer glow */}
             <motion.div
               className="absolute inset-0 rounded-2xl"
-              style={{
-                boxShadow: "0 0 80px rgba(255, 170, 0, 0.4), 0 0 150px rgba(255, 170, 0, 0.2)",
-              }}
+              style={{ boxShadow: "0 0 80px rgba(255,170,0,0.4), 0 0 150px rgba(255,170,0,0.2)" }}
               animate={{ opacity: phase === "envelope" ? [0, 1] : 1 }}
               transition={{ duration: 1.5 }}
             />
@@ -104,13 +99,10 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
               animate={
                 phase === "open"
                   ? { rotateY: [0, -15, 0], rotateX: [0, 10, 0], scale: [1, 1.05, 1] }
-                  : phase === "content"
-                  ? { scale: 1 }
                   : {}
               }
               transition={{ duration: 1.2, ease: "easeInOut" }}
             >
-              {/* Top shimmer line */}
               <div className="absolute top-0 left-0 right-0 h-px shimmer" />
               <div className="absolute bottom-0 left-0 right-0 h-px shimmer" />
 
@@ -134,19 +126,23 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                       stroke="rgba(255,170,0,0.7)"
                       strokeWidth="1.5"
                     />
-                    <circle cx={i < 2 ? (i === 0 ? 2 : 30) : (i === 2 ? 2 : 30)} cy={i < 2 ? 2 : 30} r="2" fill="#FFAA00" />
+                    <circle
+                      cx={i < 2 ? (i === 0 ? 2 : 30) : (i === 2 ? 2 : 30)}
+                      cy={i < 2 ? 2 : 30}
+                      r="2"
+                      fill="#FFAA00"
+                    />
                   </svg>
                 </motion.div>
               ))}
 
-              {/* Inner border */}
               <div className="absolute inset-4 border border-gold-700/30 rounded-xl pointer-events-none" />
 
-              {/* Content */}
+              {/* Card content */}
               <div className="relative z-10 h-full flex flex-col items-center justify-center p-8 text-center">
                 {/* Bismillah */}
                 <motion.p
-                  className="text-gold-400 text-sm tracking-[0.3em] mb-6 font-cinzel"
+                  className="text-sm tracking-[0.3em] mb-6 font-cinzel"
                   style={{ color: "rgba(255,170,0,0.7)" }}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: phase !== "envelope" ? 1 : 0, y: phase !== "envelope" ? 0 : 10 }}
@@ -170,7 +166,7 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                   </svg>
                 </motion.div>
 
-                {/* With joy */}
+                {/* Invite text */}
                 <motion.p
                   className="font-cormorant italic text-base tracking-widest mb-4"
                   style={{ color: "rgba(245,240,232,0.7)", fontFamily: "Cormorant Garamond" }}
@@ -178,10 +174,10 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                   animate={{ opacity: phase !== "envelope" ? 1 : 0 }}
                   transition={{ duration: 0.8, delay: 0.4 }}
                 >
-                  With love & blessings, you are invited to
+                  With love &amp; blessings, you are invited to
                 </motion.p>
 
-                {/* THE WEDDING */}
+                {/* Names */}
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: phase !== "envelope" ? 1 : 0, y: phase !== "envelope" ? 0 : 20 }}
@@ -200,7 +196,7 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                       backgroundClip: "text",
                     }}
                   >
-                    Wajahat
+                    Wajahat Mustafa
                   </h1>
                   <p className="font-cinzel text-xs tracking-[0.3em] mb-2" style={{ color: "rgba(255,170,0,0.5)" }}>
                     &amp;
@@ -236,89 +232,76 @@ export default function InvitationReveal({ onComplete }: InvitationRevealProps) 
                   </p>
                 </motion.div>
 
-                {/* Tap to enter */}
+                {/* OPEN INVITATION button — only clickable, never auto-skipped */}
                 <motion.button
-                  className="mt-8 font-cinzel text-xs tracking-[0.3em] px-6 py-3 rounded-full"
+                  className="mt-8 font-cinzel text-xs tracking-[0.3em] px-6 py-3 rounded-full cursor-pointer"
                   style={{
-                    border: "1px solid rgba(255,170,0,0.4)",
+                    border: "1px solid rgba(255,170,0,0.5)",
                     color: "#FFAA00",
-                    background: "rgba(255,170,0,0.05)",
+                    background: "rgba(255,170,0,0.07)",
                   }}
-                  initial={{ opacity: 0 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{
-                    opacity: phase === "content" ? [0, 1] : 0,
-                    y: [10, 0],
+                    opacity: phase === "content" ? 1 : 0,
+                    y: phase === "content" ? 0 : 10,
                   }}
                   transition={{ duration: 0.8, delay: 0.9 }}
-                  whileHover={{ background: "rgba(255,170,0,0.1)", scale: 1.05 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={onComplete}
+                  whileHover={{
+                    background: "rgba(255,170,0,0.15)",
+                    boxShadow: "0 0 30px rgba(255,170,0,0.3)",
+                    scale: 1.05,
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                  onClick={handleOpen}
                 >
                   OPEN INVITATION
                 </motion.button>
               </div>
 
-              {/* Envelope flap animation */}
-              {phase === "envelope" && (
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  style={{
-                    background: "linear-gradient(145deg, #1a0a2e 0%, #0d0520 50%, #1a0a2e 100%)",
-                  }}
-                  exit={{ opacity: 0 }}
-                >
-                  <div className="text-center">
-                    <motion.div
-                      animate={{
-                        scale: [1, 1.1, 1],
-                        filter: ["brightness(1)", "brightness(1.3)", "brightness(1)"],
-                      }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    >
-                      {/* Wax seal */}
-                      <svg width="100" height="100" viewBox="0 0 100 100">
-                        <circle cx="50" cy="50" r="45" fill="rgba(179,109,0,0.3)" stroke="rgba(255,170,0,0.5)" strokeWidth="1" />
-                        <circle cx="50" cy="50" r="35" fill="rgba(179,109,0,0.4)" stroke="rgba(255,208,71,0.4)" strokeWidth="0.5" />
-                        <text x="50" y="44" textAnchor="middle" fontSize="18" fill="#FFD047" fontFamily="serif">W</text>
-                        <text x="50" y="62" textAnchor="middle" fontSize="8" fill="rgba(255,208,71,0.7)" fontFamily="serif" letterSpacing="3">MUSTAFA</text>
-                        {Array.from({ length: 8 }).map((_, i) => (
-                          <line
-                            key={i}
-                            x1="50" y1="5"
-                            x2="50" y2="12"
-                            stroke="rgba(255,170,0,0.5)"
-                            strokeWidth="1"
-                            transform={`rotate(${i * 45} 50 50)`}
-                          />
-                        ))}
-                      </svg>
-                    </motion.div>
-                    <motion.p
-                      className="font-cinzel text-xs tracking-[0.4em] mt-4"
-                      style={{ color: "rgba(255,170,0,0.6)" }}
-                      animate={{ opacity: [0.4, 1, 0.4] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      OPENING...
-                    </motion.p>
-                  </div>
-                </motion.div>
-              )}
+              {/* Wax seal overlay — shows only during envelope phase */}
+              <AnimatePresence>
+                {phase === "envelope" && (
+                  <motion.div
+                    className="absolute inset-0 flex items-center justify-center"
+                    style={{ background: "linear-gradient(145deg, #1a0a2e 0%, #0d0520 50%, #1a0a2e 100%)" }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6 }}
+                  >
+                    <div className="text-center">
+                      <motion.div
+                        animate={{ scale: [1, 1.1, 1], filter: ["brightness(1)", "brightness(1.3)", "brightness(1)"] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        <svg width="100" height="100" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45" fill="rgba(179,109,0,0.3)" stroke="rgba(255,170,0,0.5)" strokeWidth="1" />
+                          <circle cx="50" cy="50" r="35" fill="rgba(179,109,0,0.4)" stroke="rgba(255,208,71,0.4)" strokeWidth="0.5" />
+                          <text x="50" y="44" textAnchor="middle" fontSize="18" fill="#FFD047" fontFamily="serif">W</text>
+                          <text x="50" y="62" textAnchor="middle" fontSize="8" fill="rgba(255,208,71,0.7)" fontFamily="serif" letterSpacing="3">MUSTAFA</text>
+                          {Array.from({ length: 8 }).map((_, i) => (
+                            <line
+                              key={i}
+                              x1="50" y1="5" x2="50" y2="12"
+                              stroke="rgba(255,170,0,0.5)"
+                              strokeWidth="1"
+                              transform={`rotate(${i * 45} 50 50)`}
+                            />
+                          ))}
+                        </svg>
+                      </motion.div>
+                      <motion.p
+                        className="font-cinzel text-xs tracking-[0.4em] mt-4"
+                        style={{ color: "rgba(255,170,0,0.6)" }}
+                        animate={{ opacity: [0.4, 1, 0.4] }}
+                        transition={{ duration: 1.5, repeat: Infinity }}
+                      >
+                        OPENING...
+                      </motion.p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           </motion.div>
-
-          {/* Skip button */}
-          <motion.button
-            className="absolute bottom-8 right-8 font-cinzel text-xs tracking-widest"
-            style={{ color: "rgba(255,170,0,0.4)" }}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2 }}
-            onClick={onComplete}
-            whileHover={{ color: "rgba(255,170,0,0.8)" }}
-          >
-            SKIP →
-          </motion.button>
         </motion.div>
       ) : null}
     </AnimatePresence>
