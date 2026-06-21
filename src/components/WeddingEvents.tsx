@@ -8,7 +8,9 @@ const events = [
     title: "Barat",
     urdu: "بارات",
     date: "Thursday, 10 September 2026",
-    time: "Evening Celebrations",
+    time: "9:00 PM — 12:00 AM",
+    venue: "Clock Tower Banquet",
+    locationUrl: "https://maps.app.goo.gl/59bYHSuT7DU6RERP9",
     description: "Join us as the groom arrives in royal procession, marking the sacred union of two families bound by love, faith, and the blessings of Allah. An evening of splendour, tradition, and unforgettable memories.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -22,7 +24,6 @@ const events = [
         <circle cx="35" cy="7" r="1.5" fill="currentColor" />
       </svg>
     ),
-    gradient: "from-amber-900/20 via-yellow-900/10 to-amber-900/20",
     accentColor: "#FFAA00",
     delay: 0,
   },
@@ -30,7 +31,9 @@ const events = [
     title: "Walima",
     urdu: "ولیمہ",
     date: "Saturday, 12 September 2026",
-    time: "Afternoon Banquet",
+    time: "9:00 PM — 12:00 AM",
+    venue: "Two Rings Banquet",
+    locationUrl: "https://maps.app.goo.gl/PsYBjepQL79XcwNL9",
     description: "Two days after the Barat, we celebrate the Walima — a Sunnah feast of gratitude and joy. Come and partake in this blessed gathering as we honour the newlyweds with prayers, food, and heartfelt blessings.",
     icon: (
       <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
@@ -40,7 +43,6 @@ const events = [
         <path d="M22 8 L26 8 M24 6 L24 10" stroke="currentColor" strokeWidth="1" />
       </svg>
     ),
-    gradient: "from-purple-900/20 via-violet-900/10 to-purple-900/20",
     accentColor: "#C084FC",
     delay: 0.2,
   },
@@ -119,7 +121,7 @@ export default function WeddingEvents() {
             >
               {/* Card */}
               <div
-                className="relative overflow-hidden rounded-2xl p-8 h-full"
+                className="relative overflow-hidden rounded-2xl p-8 h-full flex flex-col"
                 style={{
                   background: `linear-gradient(135deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%)`,
                   border: `1px solid rgba(255,170,0,0.2)`,
@@ -135,7 +137,7 @@ export default function WeddingEvents() {
                 {/* Top shimmer */}
                 <div className="absolute top-0 left-0 right-0 h-px shimmer" />
 
-                {/* Corner ornament */}
+                {/* Corner ornaments */}
                 <div className="absolute top-4 right-4 opacity-30">
                   <svg width="32" height="32" viewBox="0 0 32 32">
                     <path d="M30 2 L30 30 L2 30" stroke="rgba(255,170,0,0.8)" strokeWidth="1" fill="none" />
@@ -149,7 +151,7 @@ export default function WeddingEvents() {
                   </svg>
                 </div>
 
-                {/* Urdu text */}
+                {/* Urdu watermark */}
                 <p
                   className="absolute top-6 right-10 font-cinzel text-4xl opacity-10 select-none"
                   style={{ color: "#FFAA00", fontFamily: "serif" }}
@@ -189,24 +191,80 @@ export default function WeddingEvents() {
                 <p className="font-cormorant italic text-lg mb-1" style={{ color: "rgba(245,240,232,0.8)", fontFamily: "Cormorant Garamond" }}>
                   {event.date}
                 </p>
-                <p className="font-cinzel text-xs tracking-widest mb-6" style={{ color: "rgba(255,170,0,0.5)" }}>
-                  {event.time}
-                </p>
 
-                <div className="h-px mb-6" style={{ background: "linear-gradient(90deg, rgba(255,170,0,0.3), transparent)" }} />
+                {/* Time */}
+                <div className="flex items-center gap-2 mb-4">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none" style={{ color: "rgba(255,170,0,0.6)", flexShrink: 0 }}>
+                    <circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" strokeWidth="1" />
+                    <path d="M6.5 3.5 L6.5 6.5 L9 8" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                  </svg>
+                  <p className="font-cinzel text-xs tracking-widest" style={{ color: "rgba(255,170,0,0.6)" }}>
+                    {event.time}
+                  </p>
+                </div>
+
+                <div className="h-px mb-5" style={{ background: "linear-gradient(90deg, rgba(255,170,0,0.3), transparent)" }} />
 
                 {/* Description */}
                 <p
-                  className="font-cormorant text-base leading-relaxed"
+                  className="font-cormorant text-base leading-relaxed mb-6 flex-1"
                   style={{ color: "rgba(245,240,232,0.65)", fontFamily: "Cormorant Garamond" }}
                 >
                   {event.description}
                 </p>
 
-                {/* Calendar add hint */}
+                {/* Venue + Location row */}
+                <div
+                  className="rounded-xl p-4 mb-5"
+                  style={{
+                    background: "rgba(255,170,0,0.05)",
+                    border: "1px solid rgba(255,170,0,0.15)",
+                  }}
+                >
+                  {/* Venue name */}
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: "#FFAA00", flexShrink: 0 }}>
+                      <rect x="1" y="4" width="12" height="9" rx="1" stroke="currentColor" strokeWidth="1" />
+                      <path d="M4 4 L4 2.5 C4 1.7 4.7 1 5.5 1 L8.5 1 C9.3 1 10 1.7 10 2.5 L10 4" stroke="currentColor" strokeWidth="1" />
+                      <path d="M5 7.5 L9 7.5" stroke="currentColor" strokeWidth="1" strokeLinecap="round" />
+                    </svg>
+                    <span
+                      className="font-cinzel text-xs tracking-widest"
+                      style={{ color: "#FFAA00" }}
+                    >
+                      {event.venue}
+                    </span>
+                  </div>
+
+                  {/* Location button */}
+                  <a
+                    href={event.locationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 group/loc"
+                  >
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover/loc:scale-110"
+                      style={{ background: "rgba(255,170,0,0.15)", border: "1px solid rgba(255,170,0,0.4)" }}
+                    >
+                      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style={{ color: "#FFAA00" }}>
+                        <path d="M6 1 C4 1 2.5 2.5 2.5 4.5 C2.5 7 6 11 6 11 C6 11 9.5 7 9.5 4.5 C9.5 2.5 8 1 6 1Z" stroke="currentColor" strokeWidth="1" fill="none" />
+                        <circle cx="6" cy="4.5" r="1.5" stroke="currentColor" strokeWidth="0.8" />
+                      </svg>
+                    </div>
+                    <span
+                      className="font-cinzel text-xs tracking-wide transition-colors duration-300 group-hover/loc:text-yellow-300"
+                      style={{ color: "rgba(255,170,0,0.6)" }}
+                    >
+                      VIEW ON GOOGLE MAPS →
+                    </span>
+                  </a>
+                </div>
+
+                {/* Save the date */}
                 <motion.div
-                  className="mt-8 inline-flex items-center gap-2 text-xs font-cinzel tracking-widest"
-                  style={{ color: "rgba(255,170,0,0.5)" }}
+                  className="inline-flex items-center gap-2 text-xs font-cinzel tracking-widest"
+                  style={{ color: "rgba(255,170,0,0.4)" }}
                   whileHover={{ color: "rgba(255,170,0,0.9)" }}
                 >
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -221,24 +279,6 @@ export default function WeddingEvents() {
             </motion.div>
           ))}
         </div>
-
-        {/* Location note */}
-        <motion.div
-          className="text-center mt-12"
-          initial={{ opacity: 0 }}
-          animate={visible ? { opacity: 1 } : {}}
-          transition={{ delay: 0.6 }}
-        >
-          <div className="glass-card inline-flex items-center gap-4 px-8 py-4">
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ color: "#FFAA00" }}>
-              <path d="M10 1 C6.7 1 4 3.7 4 7 C4 12 10 19 10 19 C10 19 16 12 16 7 C16 3.7 13.3 1 10 1Z" stroke="currentColor" strokeWidth="1.2" fill="none" />
-              <circle cx="10" cy="7" r="2.5" stroke="currentColor" strokeWidth="1" />
-            </svg>
-            <span className="font-cormorant italic text-lg" style={{ color: "rgba(245,240,232,0.7)", fontFamily: "Cormorant Garamond" }}>
-              Pakistan — Venue details to be announced
-            </span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

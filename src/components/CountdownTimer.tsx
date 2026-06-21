@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
-const BARAT_DATE = new Date("2026-09-10T00:00:00+05:00");
+const BARAT_DATE = new Date("2026-09-10T21:00:00+05:00");
 
 function getTimeLeft() {
   const now = new Date();
@@ -204,7 +204,7 @@ export default function CountdownTimer() {
         >
           <div className="ornament-line max-w-sm mx-auto">
             <span className="font-cormorant italic text-lg" style={{ color: "rgba(245,240,232,0.5)", fontFamily: "Cormorant Garamond" }}>
-              until the Barat — 10 September 2026
+              until the Barat — 10 September 2026, 9:00 PM
             </span>
           </div>
         </motion.div>
