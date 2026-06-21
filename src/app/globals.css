@@ -1,0 +1,346 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --gold-primary: #FFAA00;
+  --gold-light: #FFD047;
+  --gold-dark: #B36D00;
+  --royal-deep: #040108;
+  --royal-mid: #0C0318;
+  --royal-light: #1A0535;
+  --glass-bg: rgba(255, 255, 255, 0.04);
+  --glass-border: rgba(255, 170, 0, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #040108;
+  color: #f5f0e8;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #040108;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #FFAA00, #B36D00);
+  border-radius: 10px;
+}
+
+/* Utility classes */
+.font-cinzel { font-family: var(--font-cinzel-unused), serif; }
+.font-cormorant { font-family: var(--font-cormorant-unused), serif; }
+.font-great-vibes { font-family: var(--font-great-vibes-unused), cursive; }
+
+.text-gold {
+  background: linear-gradient(135deg, #B36D00 0%, #FFAA00 50%, #FFD047 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gold-solid { color: #FFAA00; }
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 170, 0, 0.2);
+  border-radius: 16px;
+}
+
+.gold-border {
+  border: 1px solid rgba(255, 170, 0, 0.4);
+}
+
+.glow-gold {
+  box-shadow: 0 0 30px rgba(255, 170, 0, 0.3), 0 0 60px rgba(255, 170, 0, 0.1);
+}
+
+.glow-text-gold {
+  text-shadow: 0 0 30px rgba(255, 170, 0, 0.8), 0 0 60px rgba(255, 170, 0, 0.4);
+}
+
+.royal-bg {
+  background: radial-gradient(ellipse at top, #1A0535 0%, #0C0318 40%, #040108 100%);
+}
+
+/* Ornamental divider */
+.ornament-line {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.ornament-line::before,
+.ornament-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 170, 0, 0.6), transparent);
+}
+
+/* Particle canvas */
+#particles-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Invitation card opening animation */
+.invitation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #040108;
+}
+
+.card-envelope {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.card-front {
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+/* Timeline */
+.timeline-line {
+  background: linear-gradient(180deg, transparent, rgba(255, 170, 0, 0.6), transparent);
+}
+
+/* Gallery */
+.gallery-item {
+  overflow: hidden;
+  border-radius: 12px;
+  position: relative;
+}
+
+.gallery-item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4, 1, 8, 0.8) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.gallery-item:hover::after {
+  opacity: 1;
+}
+
+/* Input styles */
+.wedding-input {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 170, 0, 0.25);
+  border-radius: 8px;
+  color: #f5f0e8;
+  font-family: var(--font-cormorant-unused), serif;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wedding-input::placeholder {
+  color: rgba(245, 240, 232, 0.4);
+}
+
+.wedding-input:focus {
+  border-color: rgba(255, 170, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 170, 0, 0.15);
+}
+
+.wedding-textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 170, 0, 0.25);
+  border-radius: 8px;
+  color: #f5f0e8;
+  font-family: var(--font-cormorant-unused), serif;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+  width: 100%;
+  outline: none;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.wedding-textarea::placeholder {
+  color: rgba(245, 240, 232, 0.4);
+}
+
+.wedding-textarea:focus {
+  border-color: rgba(255, 170, 0, 0.6);
+  box-shadow: 0 0 20px rgba(255, 170, 0, 0.15);
+}
+
+.gold-btn {
+  background: linear-gradient(135deg, #B36D00 0%, #FFAA00 50%, #FFD047 100%);
+  color: #040108;
+  font-family: var(--font-cinzel-unused), serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  padding: 14px 40px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.gold-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 40px rgba(255, 170, 0, 0.4);
+}
+
+/* Floating petals */
+@keyframes petal-fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg) translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg) translateX(100px);
+    opacity: 0;
+  }
+}
+
+.petal {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1;
+  animation: petal-fall linear infinite;
+}
+
+/* Section reveal */
+.section-reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Glowing ring animation */
+@keyframes ring-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 170, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 0 20px rgba(255, 170, 0, 0);
+  }
+}
+
+.ring-pulse {
+  animation: ring-pulse 2.5s ease-in-out infinite;
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 170, 0, 0) 0%,
+    rgba(255, 170, 0, 0.4) 50%,
+    rgba(255, 170, 0, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Photo frame ornament */
+.photo-frame {
+  position: relative;
+}
+
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: -16px;
+  border: 1px solid rgba(255, 170, 0, 0.15);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Stars animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.8); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: #FFD047;
+  animation: twinkle ease-in-out infinite;
+}
+
+/* Countdown number flip */
+.countdown-card {
+  background: linear-gradient(160deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.countdown-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,170,0,0.8), transparent);
+}
+
+/* Responsive */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
